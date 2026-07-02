@@ -4,6 +4,63 @@
    atualizações, scroll reveal, botão voltar ao topo.
    ========================================================================== */
 
+/* ==========================================================================
+   BUSCA AUTOMÁTICA DA IMAGEM DO BANNER
+   Roda fora do DOMContentLoaded pra começar a tentar carregar a imagem
+   o mais cedo possível (assim que a tag <body>/.hero__banner existir).
+
+   Por que isso existe: hospedagens como o GitHub diferenciam MAIÚSCULA de
+   minúscula no nome do arquivo (diferente do Windows). Pra evitar dor de
+   cabeça, o site testa uma lista de nomes/formatos comuns dentro da pasta
+   assets/ e usa o primeiro que encontrar. Se a sua imagem tiver outro nome,
+   é só adicionar ele na lista CANDIDATOS_BANNER abaixo.
+   ========================================================================== */
+(function carregarBannerAutomaticamente() {
+  // Adicione aqui outros nomes/caminhos possíveis, se precisar:
+  const CANDIDATOS_BANNER = [
+    'assets/hero-banner.jpg',
+    'assets/hero-banner.jpeg',
+    'assets/hero-banner.png',
+    'assets/hero-banner.webp',
+    'assets/Hero-Banner.jpg',
+    'assets/Hero-Banner.png',
+    'assets/HERO-BANNER.JPG',
+    'assets/banner.jpg',
+    'assets/banner.png',
+    'assets/Banner.jpg',
+    'assets/Banner.png',
+    'assets/Asta.png',
+    'assets/asta.png',
+    'hero-banner.jpg',
+    'hero-banner.png',
+    'banner.jpg',
+    'banner.png'
+  ];
+
+  function aplicarImagem(caminho) {
+    const banner = document.querySelector('.hero__banner');
+    if (banner) banner.style.backgroundImage = `url('${caminho}')`;
+  }
+
+  function tentarProximo(indice) {
+    if (indice >= CANDIDATOS_BANNER.length) {
+      console.warn(
+        '[Banner] Nenhuma imagem encontrada nos caminhos testados. ' +
+        'Confirme se o arquivo está dentro da pasta "assets" e adicione ' +
+        'o nome exato dele na lista CANDIDATOS_BANNER em script.js.'
+      );
+      return;
+    }
+    const caminho = CANDIDATOS_BANNER[indice];
+    const teste = new Image();
+    teste.onload = () => aplicarImagem(caminho);
+    teste.onerror = () => tentarProximo(indice + 1);
+    teste.src = caminho;
+  }
+
+  tentarProximo(0);
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ------------------------------------------------------------------ */
