@@ -16,26 +16,24 @@
    é só adicionar ele na lista CANDIDATOS_BANNER abaixo.
    ========================================================================== */
 (function carregarBannerAutomaticamente() {
-  // Adicione aqui outros nomes/caminhos possíveis, se precisar:
-  const CANDIDATOS_BANNER = [
-    'assets/hero-banner.jpg',
-    'assets/hero-banner.jpeg',
-    'assets/hero-banner.png',
-    'assets/hero-banner.webp',
-    'assets/Hero-Banner.jpg',
-    'assets/Hero-Banner.png',
-    'assets/HERO-BANNER.JPG',
-    'assets/banner.jpg',
-    'assets/banner.png',
-    'assets/Banner.jpg',
-    'assets/Banner.png',
-    'assets/Asta.png',
-    'assets/asta.png',
-    'hero-banner.jpg',
-    'hero-banner.png',
-    'banner.jpg',
-    'banner.png'
+  // Pastas possíveis onde a imagem pode estar (GitHub diferencia maiúscula/minúscula):
+  const PASTAS = ['assets', 'Assets', 'ASSETS', 'Assets/'];
+  // Nomes de arquivo possíveis, sem a pasta:
+  const NOMES_ARQUIVO = [
+    'hero-banner.jpg', 'hero-banner.jpeg', 'hero-banner.png', 'hero-banner.webp',
+    'Hero-Banner.jpg', 'Hero-Banner.png', 'HERO-BANNER.JPG',
+    'banner.jpg', 'banner.png', 'Banner.jpg', 'Banner.png',
+    'Asta.png', 'asta.png'
   ];
+
+  // Gera todas as combinações pasta + nome de arquivo, mais a raiz do site
+  const CANDIDATOS_BANNER = [];
+  PASTAS.forEach((pasta) => {
+    NOMES_ARQUIVO.forEach((nome) => {
+      CANDIDATOS_BANNER.push(`${pasta}/${nome}`.replace('//', '/'));
+    });
+  });
+  NOMES_ARQUIVO.forEach((nome) => CANDIDATOS_BANNER.push(nome));
 
   function aplicarImagem(caminho) {
     const banner = document.querySelector('.hero__banner');
@@ -71,9 +69,12 @@
   const EXTENSOES = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'PNG', 'JPEG'];
 
   function gerarCandidatos(nomeBase) {
+    const PASTAS = ['assets', 'Assets', 'ASSETS'];
     const candidatos = [];
-    EXTENSOES.forEach((ext) => {
-      candidatos.push(`assets/${nomeBase}.${ext}`);
+    PASTAS.forEach((pasta) => {
+      EXTENSOES.forEach((ext) => {
+        candidatos.push(`${pasta}/${nomeBase}.${ext}`);
+      });
     });
     return candidatos;
   }
@@ -82,7 +83,7 @@
     if (indice >= candidatos.length) {
       console.warn(
         `[Foto] Nenhuma imagem encontrada para "${img.dataset.photoBase}". ` +
-        `Confirme se o arquivo está dentro da pasta "assets".`
+        `Confirme se o arquivo está dentro da pasta "assets" (ou "Assets").`
       );
       return; // mantém a foto placeholder que já está no src
     }
