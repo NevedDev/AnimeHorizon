@@ -7,6 +7,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ------------------------------------------------------------------ */
+  /* 0. REFERÊNCIAS DE ELEMENTOS USADAS EM VÁRIOS PONTOS DO SCRIPT        */
+  /* ------------------------------------------------------------------ */
+  const backToTop = document.getElementById('backToTop');
+
+  /* ------------------------------------------------------------------ */
   /* 1. NAVBAR — efeito de transparência ao rolar                        */
   /* ------------------------------------------------------------------ */
   const navbar = document.getElementById('navbar');
@@ -119,8 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ------------------------------------------------------------------ */
   /* 6. BOTÃO VOLTAR AO TOPO                                              */
   /* ------------------------------------------------------------------ */
-  const backToTop = document.getElementById('backToTop');
-
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
