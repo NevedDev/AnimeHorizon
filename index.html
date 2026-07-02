@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA — Site Oficial do Jogo</title>
+  <meta name="description" content="NOVA — jogo desenvolvido de forma independente. Acompanhe atualizações, conheça a equipe e os apoiadores do projeto.">
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== -->
+  <!-- FUNDO DECORATIVO      -->
+  <!-- ==================== -->
+  <div class="bg-glow bg-glow--one" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--two" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <!-- ==================== -->
+  <!-- NAVEGAÇÃO             -->
+  <!-- ==================== -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="#topo" class="navbar__brand">
+        <span class="navbar__brand-mark">◆</span>
+        <span>NOVA</span>
+      </a>
+
+      <nav class="navbar__links" id="navLinks">
+        <a href="#topo" class="navbar__link is-active">Início</a>
+        <a href="#atualizacoes" class="navbar__link">Atualizações</a>
+        <a href="#desenvolvedores" class="navbar__link">Desenvolvedores</a>
+        <a href="#donos" class="navbar__link">Donos</a>
+      </nav>
+
+      <a href="#atualizacoes" class="btn btn--primary navbar__cta">Ver novidades</a>
+
+      <button class="navbar__burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Menu mobile -->
+    <nav class="navbar__mobile" id="navMobile">
+      <a href="#topo" class="navbar__mobile-link">Início</a>
+      <a href="#atualizacoes" class="navbar__mobile-link">Atualizações</a>
+      <a href="#desenvolvedores" class="navbar__mobile-link">Desenvolvedores</a>
+      <a href="#donos" class="navbar__mobile-link">Donos</a>
+    </nav>
+  </header>
+
+  <!-- ==================== -->
+  <!-- HERO / BANNER         -->
+  <!-- ==================== -->
+  <section class="hero" id="topo">
+    <!--
+      ======================================================================
+      SUBSTITUIR IMAGEM DO BANNER AQUI:
+      Troque o arquivo "assets/hero-banner.jpg" pela sua imagem.
+      Recomendado: 1920x1080px ou maior, formato paisagem.
+      Se preferir usar uma cor/gradiente sem imagem, apague a linha
+      "background-image" dentro da classe .hero em style.css.
+      ======================================================================
+    -->
+    <div class="hero__banner" style="background-image: url('assets/hero-banner.jpg');"></div>
+    <div class="hero__overlay"></div>
+
+    <div class="hero__content reveal">
+      <span class="tag">
+        <span class="tag__dot"></span>
+        EM DESENVOLVIMENTO ATIVO
+      </span>
+
+      <h1 class="hero__title">
+        JOGUE.<br>
+        CONSTRUA.<br>
+        <span class="hero__title-accent">EVOLUA.</span>
+      </h1>
+
+      <p class="hero__subtitle">
+        <strong>NOVA</strong> é um jogo criado por um estúdio independente,
+        feito com paixão para entregar uma experiência única a cada atualização.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#atualizacoes" class="btn btn--primary">Ver atualizações</a>
+        <a href="#desenvolvedores" class="btn btn--ghost">Conhecer a equipe</a>
+      </div>
+    </div>
+
+    <a href="#atualizacoes" class="scroll-indicator" aria-label="Rolar para baixo">
+      <span>ROLAR</span>
+      <span class="scroll-indicator__line"></span>
+    </a>
+  </section>
+
+  <!-- ==================== -->
+  <!-- ATUALIZAÇÕES          -->
+  <!-- ==================== -->
+  <section class="section" id="atualizacoes">
+    <div class="section__inner">
+      <div class="section__head reveal">
+        <span class="eyebrow">Changelog</span>
+        <h2 class="section__title">Atualizações</h2>
+        <p class="section__desc">
+          Tudo o que muda no jogo, atualização após atualização. Clique em um card para ver os detalhes.
+        </p>
+      </div>
+
+      <!--
+        ======================================================================
+        COMO ADICIONAR UMA NOVA ATUALIZAÇÃO:
+        1. Copie um bloco inteiro <article class="update-card"> ... </article>
+        2. Cole antes do comentário "FIM DA LISTA DE ATUALIZAÇÕES"
+        3. Altere o título, a data, a tag (nova/em breve) e os itens da lista <ul>.
+        Não é necessário mexer no CSS ou no JS — tudo é automático.
+        ======================================================================
+      -->
+      <div class="update-list">
+
+        <!-- Update 1 -->
+        <article class="update-card reveal">
+          <button class="update-card__header" data-update-toggle>
+            <div class="update-card__heading">
+              <span class="update-card__index">01</span>
+              <div>
+                <h3 class="update-card__title">Update 1</h3>
+                <span class="update-card__date">Última atualização</span>
+              </div>
+            </div>
+            <span class="update-card__chevron" aria-hidden="true">＋</span>
+          </button>
+
+          <div class="update-card__body">
+            <div class="update-card__body-inner">
+              <ul class="update-card__list">
+                <li>Novo personagem jogável</li>
+                <li>Novo mapa</li>
+                <li>Correção de bugs</li>
+                <li>Melhorias de desempenho</li>
+                <li>Novas animações</li>
+                <li>Balanceamento do jogo</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Update 2 (espaço reservado para futuras atualizações) -->
+        <article class="update-card update-card--placeholder reveal">
+          <button class="update-card__header" data-update-toggle disabled>
+            <div class="update-card__heading">
+              <span class="update-card__index">02</span>
+              <div>
+                <h3 class="update-card__title">Update 2</h3>
+                <span class="update-card__date">Em breve</span>
+              </div>
+            </div>
+            <span class="update-card__chevron" aria-hidden="true">＋</span>
+          </button>
+          <div class="update-card__body">
+            <div class="update-card__body-inner">
+              <ul class="update-card__list">
+                <li>Adicione aqui os itens desta atualização quando ela for lançada.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Update 3 (espaço reservado para futuras atualizações) -->
+        <article class="update-card update-card--placeholder reveal">
+          <button class="update-card__header" data-update-toggle disabled>
+            <div class="update-card__heading">
+              <span class="update-card__index">03</span>
+              <div>
+                <h3 class="update-card__title">Update 3</h3>
+                <span class="update-card__date">Em breve</span>
+              </div>
+            </div>
+            <span class="update-card__chevron" aria-hidden="true">＋</span>
+          </button>
+          <div class="update-card__body">
+            <div class="update-card__body-inner">
+              <ul class="update-card__list">
+                <li>Adicione aqui os itens desta atualização quando ela for lançada.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Update 4 (espaço reservado para futuras atualizações) -->
+        <article class="update-card update-card--placeholder reveal">
+          <button class="update-card__header" data-update-toggle disabled>
+            <div class="update-card__heading">
+              <span class="update-card__index">04</span>
+              <div>
+                <h3 class="update-card__title">Update 4</h3>
+                <span class="update-card__date">Em breve</span>
+              </div>
+            </div>
+            <span class="update-card__chevron" aria-hidden="true">＋</span>
+          </button>
+          <div class="update-card__body">
+            <div class="update-card__body-inner">
+              <ul class="update-card__list">
+                <li>Adicione aqui os itens desta atualização quando ela for lançada.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+        <!-- FIM DA LISTA DE ATUALIZAÇÕES -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== -->
+  <!-- DESENVOLVEDORES       -->
+  <!-- ==================== -->
+  <section class="section section--alt" id="desenvolvedores">
+    <div class="section__inner">
+      <div class="section__head reveal">
+        <span class="eyebrow">A equipe</span>
+        <h2 class="section__title">Desenvolvedores</h2>
+        <p class="section__desc">
+          As pessoas que colocam a mão na massa todos os dias para dar vida ao jogo.
+        </p>
+      </div>
+
+      <!--
+        Para adicionar um novo desenvolvedor, copie um bloco <article class="person-card">
+        inteiro e cole dentro de .people-grid. Troque a foto, nome, cargo e descrição.
+      -->
+      <div class="people-grid">
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/dev-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dev</h3>
+          <span class="person-card__role">Game Designer</span>
+          <p class="person-card__desc">Responsável pela criação de sistemas de jogo e balanceamento das mecânicas principais.</p>
+        </article>
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/dev-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dev</h3>
+          <span class="person-card__role">Programador</span>
+          <p class="person-card__desc">Desenvolve as funcionalidades do jogo e cuida da performance e estabilidade.</p>
+        </article>
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/dev-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dev</h3>
+          <span class="person-card__role">Artista 3D / UI</span>
+          <p class="person-card__desc">Cria os visuais, interfaces e a identidade artística de todo o jogo.</p>
+        </article>
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/dev-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dev</h3>
+          <span class="person-card__role">Sound Designer</span>
+          <p class="person-card__desc">Cuida da trilha sonora, efeitos sonoros e ambientação de áudio do jogo.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== -->
+  <!-- DONOS                 -->
+  <!-- ==================== -->
+  <section class="section" id="donos">
+    <div class="section__inner">
+      <div class="section__head reveal">
+        <span class="eyebrow">Liderança</span>
+        <h2 class="section__title">Donos</h2>
+        <p class="section__desc">
+          Os responsáveis pela visão e direção do projeto.
+        </p>
+      </div>
+
+      <!--
+        Para adicionar um novo dono/apoiador, copie um bloco <article class="person-card">
+        inteiro e cole dentro de .people-grid.
+      -->
+      <div class="people-grid people-grid--owners">
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/owner-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dono</h3>
+          <span class="person-card__role">Fundador &amp; Diretor</span>
+          <p class="person-card__desc">Idealizador do projeto, responsável pela direção criativa e estratégica do estúdio.</p>
+        </article>
+
+        <article class="person-card reveal">
+          <div class="person-card__glow"></div>
+          <div class="person-card__photo">
+            <img src="assets/owner-placeholder.jpg" alt="Foto de perfil" loading="lazy">
+          </div>
+          <h3 class="person-card__name">Nome do Dono</h3>
+          <span class="person-card__role">Co-fundador</span>
+          <p class="person-card__desc">Cuida da parte administrativa, parcerias e crescimento da comunidade.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== -->
+  <!-- RODAPÉ                -->
+  <!-- ==================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span class="navbar__brand-mark">◆</span>
+        <span>NOVA</span>
+      </div>
+
+      <p class="footer__copy">
+        © <span id="footerYear">2026</span> NOVA. Todos os direitos reservados.
+      </p>
+
+      <div class="footer__socials">
+        <a href="#" class="footer__social" aria-label="Discord">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0 0 15.885 3c-.211.375-.444.879-.608 1.276a18.27 18.27 0 0 0-5.487 0A12.64 12.64 0 0 0 9.182 3 19.736 19.736 0 0 0 4.748 4.37C1.578 9.046.729 13.606.973 18.101a19.9 19.9 0 0 0 5.99 3.03c.485-.657.916-1.354 1.287-2.087a12.9 12.9 0 0 1-2.028-.967c.17-.123.336-.252.497-.383a14.3 14.3 0 0 0 11.562 0c.163.132.328.26.497.383-.646.386-1.324.71-2.03.968.372.732.802 1.43 1.288 2.086a19.84 19.84 0 0 0 5.994-3.03c.288-5.213-.735-9.729-3.713-13.732ZM8.984 15.36c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.955 2.42-2.156 2.42Zm6.032 0c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.946 2.42-2.156 2.42Z"/></svg>
+        </a>
+        <a href="#" class="footer__social" aria-label="X / Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231ZM17.083 19.77h1.833L7.084 4.126H5.117Z"/></svg>
+        </a>
+        <a href="#" class="footer__social" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.376.55A3.017 3.017 0 0 0 .502 6.186 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .502 5.814 3.016 3.016 0 0 0 2.122 2.136C4.495 20.5 12 20.5 12 20.5s7.505 0 9.376-.55a3.015 3.015 0 0 0 2.122-2.136A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.502-5.814ZM9.75 15.568V8.432L15.818 12Z"/></svg>
+        </a>
+        <a href="#" class="footer__social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069ZM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Botão voltar ao topo -->
+  <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>
