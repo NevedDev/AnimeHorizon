@@ -62,14 +62,17 @@
   <section class="hero" id="topo">
     <!--
       ======================================================================
-      SUBSTITUIR IMAGEM DO BANNER AQUI:
-      Troque o arquivo "assets/hero-banner.jpg" pela sua imagem.
+      IMAGEM DO BANNER:
+      O caminho da imagem NÃO fica mais fixo aqui — o script.js procura
+      automaticamente por "assets/hero-banner.jpg" (e alguns nomes/formatos
+      alternativos) e aplica a que encontrar primeiro. Basta colocar sua
+      imagem dentro da pasta "assets" com esse nome.
       Recomendado: 1920x1080px ou maior, formato paisagem.
-      Se preferir usar uma cor/gradiente sem imagem, apague a linha
-      "background-image" dentro da classe .hero em style.css.
+      Se algum dia quiser voltar a fixar manualmente, adicione de volta
+      style="background-image: url('assets/SEU-ARQUIVO.jpg');" na div abaixo.
       ======================================================================
     -->
-    <div class="hero__banner" style="background-image: url('assets/hero-banner.jpg');"></div>
+    <div class="hero__banner"></div>
     <div class="hero__overlay"></div>
 
     <div class="hero__content reveal">
