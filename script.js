@@ -61,6 +61,45 @@
   tentarProximo(0);
 })();
 
+/* ==========================================================================
+   BUSCA AUTOMÁTICA DAS FOTOS DE PERFIL (Desenvolvedores / Donos)
+   Funciona junto com o atributo data-photo-base="NomeDoArquivo" no <img>.
+   Testa extensões e variações de maiúscula/minúscula automaticamente,
+   assim não precisa acertar ".jpg", ".png" etc. na hora de subir a foto.
+   ========================================================================== */
+(function carregarFotosDePerfilAutomaticamente() {
+  const EXTENSOES = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'PNG', 'JPEG'];
+
+  function gerarCandidatos(nomeBase) {
+    const candidatos = [];
+    EXTENSOES.forEach((ext) => {
+      candidatos.push(`assets/${nomeBase}.${ext}`);
+    });
+    return candidatos;
+  }
+
+  function tentarProximaFoto(img, candidatos, indice) {
+    if (indice >= candidatos.length) {
+      console.warn(
+        `[Foto] Nenhuma imagem encontrada para "${img.dataset.photoBase}". ` +
+        `Confirme se o arquivo está dentro da pasta "assets".`
+      );
+      return; // mantém a foto placeholder que já está no src
+    }
+    const caminho = candidatos[indice];
+    const teste = new Image();
+    teste.onload = () => { img.src = caminho; };
+    teste.onerror = () => tentarProximaFoto(img, candidatos, indice + 1);
+    teste.src = caminho;
+  }
+
+  document.querySelectorAll('img[data-photo-base]').forEach((img) => {
+    const nomeBase = img.dataset.photoBase;
+    const candidatos = gerarCandidatos(nomeBase);
+    tentarProximaFoto(img, candidatos, 0);
+  });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ------------------------------------------------------------------ */
