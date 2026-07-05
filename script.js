@@ -180,13 +180,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let i = 0;
     const tryNext = () => {
       if (i >= candidates.length) {
+        console.warn(`[Anime Horizon] Nenhuma foto encontrada para "${base}". Caminhos testados:`, candidates);
         showInitialsFallback(img);
         return;
       }
       const candidate = candidates[i++];
       const test = new Image();
-      test.onload = () => { img.src = candidate; };
-      test.onerror = tryNext;
+      test.onload = () => {
+        img.src = candidate;
+        console.info(`[Anime Horizon] Foto de "${base}" carregada:`, candidate);
+      };
+      test.onerror = () => {
+        console.warn(`[Anime Horizon] Falhou ao tentar foto de "${base}":`, candidate);
+        tryNext();
+      };
       test.src = candidate;
     };
     tryNext();
@@ -203,17 +210,29 @@ document.addEventListener('DOMContentLoaded', () => {
     'assets/hero-banner.jpeg',
     'assets/hero-banner.png',
     'assets/hero-banner.webp',
+    'assets/Hero-Banner.jpg',
     'assets/banner.jpg',
     'assets/banner.png',
   ];
 
   const tryNextImage = (index) => {
-    if (!heroBanner || index >= candidateNames.length) return;
+    if (!heroBanner) {
+      console.warn('[Anime Horizon] .hero__banner não foi encontrado no HTML.');
+      return;
+    }
+    if (index >= candidateNames.length) {
+      console.warn('[Anime Horizon] Nenhuma imagem de banner encontrada. Caminhos testados:', candidateNames);
+      return;
+    }
     const img = new Image();
     img.onload = () => {
       heroBanner.style.backgroundImage = `url('${candidateNames[index]}')`;
+      console.info('[Anime Horizon] Banner carregado com sucesso:', candidateNames[index]);
     };
-    img.onerror = () => tryNextImage(index + 1);
+    img.onerror = () => {
+      console.warn('[Anime Horizon] Falhou ao tentar carregar:', candidateNames[index]);
+      tryNextImage(index + 1);
+    };
     img.src = candidateNames[index];
   };
   tryNextImage(0);
