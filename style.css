@@ -708,18 +708,6 @@ button { font: inherit; cursor: pointer; }
   object-fit: cover;
   background: var(--surface-2);
 }
-.person-card__initials {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-accent);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.15rem;
-}
 
 .person-card__name {
   font-family: var(--font-display);
