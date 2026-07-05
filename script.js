@@ -144,50 +144,70 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('footerYear').textContent = new Date().getFullYear();
 
   /* ------------------------------------------------------------------ */
-  /* 8. COLAGEM DE FUNDO DO HERO                                          */
-  /*    Gera os ladrilhos e tenta preencher cada um com uma imagem de     */
-  /*    assets/collage/1.jpg, 2.jpg, 3.jpg... (até 12). Ladrilhos sem     */
-  /*    imagem correspondente recebem um gradiente neutro como reserva.   */
+  /* 8. BANNER AUTOMÁTICO DO HERO                                         */
+  /*    Procura por assets/hero-banner.(jpg|jpeg|png|webp) e aplica a     */
+  /*    primeira imagem encontrada como plano de fundo do hero.           */
   /* ------------------------------------------------------------------ */
-  const collage = document.getElementById('heroCollage');
+  const heroBanner = document.querySelector('.hero__banner');
+  const candidateNames = [
+    'assets/hero-banner.jpg',
+    'assets/hero-banner.jpeg',
+    'assets/hero-banner.png',
+    'assets/hero-banner.webp',
+    'assets/banner.jpg',
+    'assets/banner.png',
+  ];
 
-  if (collage) {
-    const TILE_COUNT = 24; // quantidade de ladrilhos exibidos na colagem
-    const MAX_IMAGES = 12; // quantidade máxima de imagens que o script procura
-    const fallbackClasses = ['collage-tile--a', 'collage-tile--b', 'collage-tile--c'];
-    const extensions = ['jpg', 'jpeg', 'png', 'webp'];
-
-    // Cria todos os ladrilhos já com uma classe de reserva (gradiente neutro)
-    const tiles = [];
-    for (let i = 0; i < TILE_COUNT; i++) {
-      const tile = document.createElement('div');
-      tile.className = `collage-tile ${fallbackClasses[i % fallbackClasses.length]}`;
-      collage.appendChild(tile);
-      tiles.push(tile);
-    }
-
-    // Tenta carregar assets/collage/N.<ext> para N de 1 até MAX_IMAGES.
-    // Cada imagem encontrada substitui o fundo de um ou mais ladrilhos.
-    const tryLoad = (n, extIndex) => {
-      if (n > MAX_IMAGES) return;
-      if (extIndex >= extensions.length) {
-        tryLoad(n + 1, 0);
-        return;
-      }
-      const path = `assets/collage/${n}.${extensions[extIndex]}`;
-      const img = new Image();
-      img.onload = () => {
-        tiles.forEach((tile, i) => {
-          if (i % MAX_IMAGES === (n - 1)) {
-            tile.style.backgroundImage = `url('${path}')`;
-          }
-        });
-        tryLoad(n + 1, 0);
-      };
-      img.onerror = () => tryLoad(n, extIndex + 1);
-      img.src = path;
+  const tryNextImage = (index) => {
+    if (!heroBanner || index >= candidateNames.length) return;
+    const img = new Image();
+    img.onload = () => {
+      heroBanner.style.backgroundImage = `url('${candidateNames[index]}')`;
     };
-    tryLoad(1, 0);
-  }
+    img.onerror = () => tryNextImage(index + 1);
+    img.src = candidateNames[index];
+  };
+  tryNextImage(0);
+
+  /* ------------------------------------------------------------------ */
+  /* 9. CONTAGEM DE MEMBROS DO DISCORD                                    */
+  /*    Busca a contagem aproximada de membros a partir do link de        */
+  /*    convite do servidor (não precisa de bot nem de token). Se a       */
+  /*    busca falhar (sem internet, CORS bloqueado, etc.), o número de    */
+  /*    reserva definido em FALLBACK_MEMBER_COUNT é usado no lugar.       */
+  /*                                                                      */
+  /*    IMPORTANTE: troque INVITE_CODE se o link do Discord mudar.        */
+  /*    OBS: não é possível puxar a FOTO DE PERFIL de uma pessoa           */
+  /*    específica do Discord direto pelo navegador — isso exige um bot   */
+  /*    rodando em um servidor por causa das regras de privacidade do     */
+  /*    Discord. As fotos do Owner/Devs continuam sendo as imagens em     */
+  /*    assets/ (troque o arquivo para atualizar a foto de cada um).      */
+  /* ------------------------------------------------------------------ */
+  const INVITE_CODE = 'MK4pqqtzCh';
+  const FALLBACK_MEMBER_COUNT = 92684;
+
+  const formatNumber = (n) => n.toLocaleString('pt-BR');
+
+  const setMemberCount = (n) => {
+    const formatted = formatNumber(n);
+    const badge = document.getElementById('memberBadgeCount');
+    const stat = document.getElementById('statMembers');
+    if (badge) badge.textContent = formatted;
+    if (stat) stat.textContent = formatted;
+  };
+
+  // Mostra o número de reserva imediatamente para nunca deixar "—" na tela
+  setMemberCount(FALLBACK_MEMBER_COUNT);
+
+  fetch(`https://discord.com/api/v10/invites/${INVITE_CODE}?with_counts=true`)
+    .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+    .then((data) => {
+      if (typeof data.approximate_member_count === 'number') {
+        setMemberCount(data.approximate_member_count);
+      }
+    })
+    .catch(() => {
+      // Mantém o número de reserva silenciosamente — sem quebrar a página.
+    });
 
 });
