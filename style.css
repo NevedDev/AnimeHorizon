@@ -341,36 +341,38 @@ button { font: inherit; cursor: pointer; }
   isolation: isolate;
 }
 
-/* Colagem de arte ao fundo — elemento de assinatura da página */
-.hero__collage {
+.hero__banner {
   position: absolute;
-  inset: -12%;
+  inset: 0;
   z-index: -2;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  grid-auto-rows: 150px;
-  gap: 10px;
-  transform: rotate(-5deg) scale(1.2);
-  opacity: 0.65;
-}
-.collage-tile {
-  border-radius: 16px;
+  background-color: #0c0d12;
   background-size: cover;
   background-position: center;
-  background-color: var(--surface-2);
+  /* A imagem entra aqui via JS — veja o comentário no index.html */
 }
-.collage-tile--a { background-image: linear-gradient(135deg, rgba(139,92,246,0.35), rgba(34,211,238,0.12)); }
-.collage-tile--b { background-image: linear-gradient(135deg, rgba(34,211,238,0.28), rgba(139,92,246,0.1)); }
-.collage-tile--c { background-image: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(139,92,246,0.18)); }
 
 .hero__overlay {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(115deg, rgba(10,11,16,0.97) 0%, rgba(10,11,16,0.88) 32%, rgba(10,11,16,0.55) 62%, rgba(10,11,16,0.3) 100%),
-    linear-gradient(180deg, rgba(10,11,16,0.15) 0%, rgba(10,11,16,0.75) 78%, var(--bg) 100%);
+    linear-gradient(180deg, rgba(10,11,16,0.6) 0%, rgba(10,11,16,0.88) 60%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(10,11,16,0.92) 0%, rgba(10,11,16,0.4) 55%, rgba(10,11,16,0.8) 100%);
 }
+
+/* Animação de entrada do hero — roda em CSS puro, não depende do JavaScript,
+   então o conteúdo do topo da página SEMPRE aparece, mesmo se algum script falhar. */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-in {
+  animation: hero-fade-up 0.7s var(--ease) both;
+}
+.hero__title.anim-in { animation-delay: 0.05s; }
+.hero__subtitle.anim-in { animation-delay: 0.15s; }
+.hero__actions.anim-in { animation-delay: 0.25s; }
+.stats.anim-in { animation-delay: 0.35s; }
 
 .hero__content {
   max-width: var(--container);
@@ -414,13 +416,11 @@ button { font: inherit; cursor: pointer; }
 
 /* Barra de estatísticas */
 .stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 16px;
-  max-width: 780px;
 }
 .stats__item {
-  padding: 20px 24px;
+  padding: 18px 26px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.03);
@@ -485,7 +485,7 @@ button { font: inherit; cursor: pointer; }
 }
 
 @media (max-width: 700px) {
-  .stats { grid-template-columns: 1fr; }
+  .stats { flex-direction: column; }
 }
 
 /* ==========================================================================
