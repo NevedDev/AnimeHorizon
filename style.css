@@ -346,9 +346,9 @@ button { font: inherit; cursor: pointer; }
   inset: 0;
   z-index: -2;
   background-color: #0c0d12;
+  background-image: url('assets/hero-banner.jpg');
   background-size: cover;
   background-position: center;
-  /* A imagem entra aqui via JS — veja o comentário no index.html */
 }
 
 .hero__overlay {
