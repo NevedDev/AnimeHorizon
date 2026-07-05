@@ -146,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ------------------------------------------------------------------ */
   /* 10. BANNER DO HERO                                                   */
   /*    A imagem do banner é definida direto no style.css                 */
-  /*    (.hero__banner { background-image: url('assets/hero-banner.jpg')} */
-  /*    Sem lógica extra aqui — só troque o arquivo em assets/.           */
+  /*    (.hero__banner { background-image: url('Assets/hero-banner.jpg')} */
+  /*    Sem lógica extra aqui — só troque o arquivo em Assets/.           */
   /* ------------------------------------------------------------------ */
 
   /* ------------------------------------------------------------------ */
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /*    específica do Discord direto pelo navegador — isso exige um bot   */
   /*    rodando em um servidor por causa das regras de privacidade do     */
   /*    Discord. As fotos do Owner/Devs continuam sendo as imagens em     */
-  /*    assets/ (troque o arquivo para atualizar a foto de cada um).      */
+  /*    Assets/ (troque o arquivo para atualizar a foto de cada um).      */
   /* ------------------------------------------------------------------ */
   const INVITE_CODE = 'MK4pqqtzCh';
   const FALLBACK_MEMBER_COUNT = 92684;
