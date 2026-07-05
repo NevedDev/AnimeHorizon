@@ -1,854 +1,262 @@
 /* ==========================================================================
-   ANIME HORIZON — Design System
-   Referência: estúdio de jogos Roblox estilo "AstraX" — fundo escuro azulado,
-   gradiente roxo → ciano, cards de vidro arredondados, navbar em pílula,
-   colagem de arte como pano de fundo do hero e uma barra de estatísticas.
-   Paleta:   #0a0b10 (fundo) · superfícies em rgba branco translúcido
-             #8b5cf6 (roxo) · #22d3ee (ciano)
-   Tipografia: Space Grotesk (display) + Inter (corpo)
+   ANIME HORIZON — script.js
+   Toda a interatividade do site: navbar, menu mobile, accordion de
+   atualizações, scroll reveal, botão voltar ao topo, colagem do hero.
    ========================================================================== */
 
-:root {
-  /* Cores */
-  --bg: #0a0b10;
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-2: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
+document.addEventListener('DOMContentLoaded', () => {
 
-  --purple: #8b5cf6;
-  --purple-light: #a78bfa;
-  --cyan: #22d3ee;
-  --green: #34d399;
+  /* ------------------------------------------------------------------ */
+  /* 0. REFERÊNCIAS DE ELEMENTOS USADAS EM VÁRIOS PONTOS DO SCRIPT        */
+  /* ------------------------------------------------------------------ */
+  const backToTop = document.getElementById('backToTop');
 
-  --text: #f5f5f7;
-  --text-muted: #9a9aa8;
-  --text-faint: #63636f;
+  /* ------------------------------------------------------------------ */
+  /* 1. NAVBAR — efeito de transparência ao rolar                        */
+  /* ------------------------------------------------------------------ */
+  const navbar = document.getElementById('navbar');
 
-  --gradient-accent: linear-gradient(90deg, var(--purple) 0%, var(--cyan) 100%);
-  --gradient-radial: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%);
+  const handleScroll = () => {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 20);
 
-  /* Tipografia */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
+    // Botão voltar ao topo aparece após rolar
+    backToTop.classList.toggle('is-visible', window.scrollY > 500);
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
 
-  /* Espaçamento / forma */
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 28px;
-  --container: 1180px;
+  /* ------------------------------------------------------------------ */
+  /* 2. MENU MOBILE                                                       */
+  /* ------------------------------------------------------------------ */
+  const navBurger = document.getElementById('navBurger');
+  const navMobile = document.getElementById('navMobile');
 
-  /* Transições */
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --t-fast: 0.25s var(--ease);
-  --t-med: 0.45s var(--ease);
-}
+  navBurger.addEventListener('click', () => {
+    const isOpen = navBurger.classList.toggle('is-open');
+    navMobile.classList.toggle('is-open', isOpen);
+    navBurger.setAttribute('aria-expanded', String(isOpen));
+  });
 
-/* ==========================================================================
-   RESET
-   ========================================================================== */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+  // Fecha o menu mobile ao clicar em um link
+  document.querySelectorAll('.navbar__mobile-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      navBurger.classList.remove('is-open');
+      navMobile.classList.remove('is-open');
+      navBurger.setAttribute('aria-expanded', 'false');
+    });
+  });
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 90px;
-}
+  /* ------------------------------------------------------------------ */
+  /* 3. LINK ATIVO NA NAVBAR CONFORME A SEÇÃO VISÍVEL                     */
+  /* ------------------------------------------------------------------ */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.navbar__link');
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  position: relative;
-}
+  const activateLink = () => {
+    let currentId = sections[0]?.id;
+    const scrollPos = window.scrollY + 140;
 
-img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; }
-ul { list-style: none; }
-button { font: inherit; cursor: pointer; }
+    sections.forEach((section) => {
+      if (scrollPos >= section.offsetTop) {
+        currentId = section.id;
+      }
+    });
 
-::selection { background: var(--purple); color: #fff; }
+    navLinks.forEach((link) => {
+      link.classList.toggle('is-active', link.getAttribute('href') === `#${currentId}`);
+    });
+  };
+  window.addEventListener('scroll', activateLink, { passive: true });
+  activateLink();
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+  /* ------------------------------------------------------------------ */
+  /* 4. ACCORDION — CARDS DE ATUALIZAÇÕES                                 */
+  /*    Basta que cada card tenha um botão com [data-update-toggle].      */
+  /*    Cards com o atributo "disabled" (placeholders) não abrem.         */
+  /* ------------------------------------------------------------------ */
+  const updateToggles = document.querySelectorAll('[data-update-toggle]');
 
-:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
+  updateToggles.forEach((toggle) => {
+    if (toggle.hasAttribute('disabled')) return;
 
-/* ==========================================================================
-   FUNDO DECORATIVO GLOBAL
-   ========================================================================== */
-.bg-glow {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.45;
-}
-.bg-glow--one {
-  width: 700px;
-  height: 700px;
-  top: -250px;
-  left: -150px;
-  background: var(--gradient-radial);
-}
-.bg-glow--two {
-  width: 600px;
-  height: 600px;
-  bottom: -200px;
-  right: -150px;
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.22) 0%, rgba(34, 211, 238, 0) 70%);
-}
+    const card = toggle.closest('.update-card');
+    const body = card.querySelector('.update-card__body');
+    const bodyInner = card.querySelector('.update-card__body-inner');
 
-/* ==========================================================================
-   UTILITÁRIOS
-   ========================================================================== */
-.eyebrow {
-  display: inline-block;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--purple-light);
-  margin-bottom: 14px;
-}
+    toggle.setAttribute('aria-expanded', 'false');
 
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 18px;
-  border: 1px solid var(--border-strong);
-  border-radius: 100px;
-  background: rgba(10, 11, 16, 0.5);
-  backdrop-filter: blur(10px);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-.tag__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 10px 2px var(--green);
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
+    toggle.addEventListener('click', () => {
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
 
-/* Botões */
-.btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 15px 30px;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.92rem;
-  border-radius: 100px;
-  border: 1px solid transparent;
-  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), border-color var(--t-fast);
-  white-space: nowrap;
-}
-.btn--primary {
-  background: var(--text);
-  color: #0a0b10;
-}
-.btn--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px -6px rgba(139, 92, 246, 0.45);
-}
-.btn--ghost {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--border-strong);
-  color: var(--text);
-  backdrop-filter: blur(10px);
-}
-.btn--ghost:hover {
-  border-color: var(--purple-light);
-  background: rgba(139, 92, 246, 0.1);
-  transform: translateY(-2px);
-}
+      if (isExpanded) {
+        body.style.maxHeight = null;
+        toggle.setAttribute('aria-expanded', 'false');
+      } else {
+        body.style.maxHeight = bodyInner.offsetHeight + 'px';
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+  // Abre o primeiro card (Update 1) automaticamente ao carregar a página
+  const firstToggle = document.querySelector('[data-update-toggle]:not([disabled])');
+  if (firstToggle) firstToggle.click();
 
-/* ==========================================================================
-   NAVBAR
-   ========================================================================== */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  padding: 22px 0;
-  transition: padding var(--t-fast), background var(--t-fast), border-color var(--t-fast);
-}
-.navbar.is-scrolled {
-  padding: 14px 0;
-  background: rgba(10, 11, 16, 0.7);
-  backdrop-filter: blur(16px) saturate(140%);
-  border-bottom: 1px solid var(--border);
-}
-.navbar__inner {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-.navbar__brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: 0.01em;
-}
-.navbar__brand-mark {
-  color: var(--purple-light);
-  font-size: 1.1rem;
-  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.7));
-}
-.navbar__brand-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.navbar__links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin: 0 auto;
-  padding: 6px;
-  border-radius: 100px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-}
-.navbar__link {
-  position: relative;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  transition: color var(--t-fast), background var(--t-fast);
-  padding: 9px 18px;
-  border-radius: 100px;
-}
-.navbar__link:hover { color: var(--text); }
-.navbar__link.is-active {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
-}
-.navbar__cta { flex-shrink: 0; }
+  // Recalcula a altura do card aberto se a janela for redimensionada
+  window.addEventListener('resize', () => {
+    const openToggle = document.querySelector('.update-card__header[aria-expanded="true"]');
+    if (!openToggle) return;
+    const card = openToggle.closest('.update-card');
+    const body = card.querySelector('.update-card__body');
+    const bodyInner = card.querySelector('.update-card__body-inner');
+    body.style.maxHeight = bodyInner.offsetHeight + 'px';
+  });
 
-.navbar__burger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  padding: 6px;
-}
-.navbar__burger span {
-  width: 22px;
-  height: 2px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: transform var(--t-fast), opacity var(--t-fast);
-}
-.navbar__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.navbar__burger.is-open span:nth-child(2) { opacity: 0; }
-.navbar__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  /* ------------------------------------------------------------------ */
+  /* 5. SCROLL REVEAL — anima elementos ao entrarem na tela                */
+  /* ------------------------------------------------------------------ */
+  const revealEls = document.querySelectorAll('.reveal');
 
-.navbar__mobile {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--t-med);
-  background: rgba(10, 11, 16, 0.97);
-  backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-}
-.navbar__mobile.is-open { max-height: 300px; }
-.navbar__mobile-link {
-  padding: 16px 28px;
-  font-size: 0.98rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-  transition: color var(--t-fast), background var(--t-fast);
-}
-.navbar__mobile-link:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.03);
-}
-.navbar__mobile-link--discord {
-  color: var(--purple-light);
-  font-weight: 600;
-  border-bottom: none;
-}
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+  );
 
-@media (max-width: 900px) {
-  .navbar__links, .navbar__cta { display: none; }
-  .navbar__burger { display: flex; }
-  .navbar__mobile { display: flex; }
-}
+  revealEls.forEach((el) => revealObserver.observe(el));
 
-/* ==========================================================================
-   HERO
-   ========================================================================== */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 150px 28px 90px;
-  overflow: hidden;
-  isolation: isolate;
-}
+  /* ------------------------------------------------------------------ */
+  /* 6. BOTÃO VOLTAR AO TOPO                                              */
+  /* ------------------------------------------------------------------ */
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
-.hero__banner {
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-color: #0c0d12;
-  background-size: cover;
-  background-position: center;
-  /* A imagem entra aqui via JS — veja o comentário no index.html */
-}
+  /* ------------------------------------------------------------------ */
+  /* 7. ANO DINÂMICO NO RODAPÉ                                            */
+  /* ------------------------------------------------------------------ */
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-.hero__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(10,11,16,0.6) 0%, rgba(10,11,16,0.88) 60%, var(--bg) 100%),
-    linear-gradient(90deg, rgba(10,11,16,0.92) 0%, rgba(10,11,16,0.4) 55%, rgba(10,11,16,0.8) 100%);
-}
+  /* ------------------------------------------------------------------ */
+  /* 10. FOTOS DE PERFIL (DEV / DONO)                                     */
+  /*     Cada <img> tem um atributo data-photo-base com o nome da         */
+  /*     pessoa (ex: "Chrollo"). O script tenta carregar, nessa ordem:    */
+  /*       1) assets/<Nome>.jpg / .jpeg / .png / .webp                    */
+  /*       2) o src original do HTML (ex: assets/dev-placeholder.jpg)     */
+  /*     Se nada for encontrado, mostra as iniciais da pessoa no lugar    */
+  /*     em vez do ícone de imagem quebrada.                              */
+  /*                                                                      */
+  /*     PARA ADICIONAR UMA FOTO: salve o arquivo dentro da pasta         */
+  /*     "assets" usando exatamente o nome da pessoa, por exemplo:        */
+  /*     assets/Chrollo.jpg — respeitando maiúsculas/minúsculas.          */
+  /* ------------------------------------------------------------------ */
+  const photoImgs = document.querySelectorAll('[data-photo-base]');
 
-/* Animação de entrada do hero — roda em CSS puro, não depende do JavaScript,
-   então o conteúdo do topo da página SEMPRE aparece, mesmo se algum script falhar. */
-@keyframes hero-fade-up {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.anim-in {
-  animation: hero-fade-up 0.7s var(--ease) both;
-}
-.hero__title.anim-in { animation-delay: 0.05s; }
-.hero__subtitle.anim-in { animation-delay: 0.15s; }
-.hero__actions.anim-in { animation-delay: 0.25s; }
-.stats.anim-in { animation-delay: 0.35s; }
+  const showInitialsFallback = (img) => {
+    const wrapper = img.closest('.person-card__photo');
+    if (!wrapper) return;
+    const name = img.getAttribute('data-photo-base') || '?';
+    const initials = name.trim().slice(0, 2).toUpperCase();
+    const fallback = document.createElement('div');
+    fallback.className = 'person-card__initials';
+    fallback.textContent = initials;
+    img.replaceWith(fallback);
+  };
 
-.hero__content {
-  max-width: var(--container);
-  margin: 0 auto;
-  width: 100%;
-}
-.hero__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2.6rem, 7vw, 5.2rem);
-  line-height: 1;
-  letter-spacing: -0.01em;
-  margin: 22px 0 26px;
-  text-transform: uppercase;
-}
-.hero__title-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.hero__subtitle {
-  max-width: 560px;
-  font-size: 1.06rem;
-  color: var(--text-muted);
-  margin-bottom: 36px;
-}
-.hero__subtitle strong {
-  color: var(--text);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: var(--purple-light);
-  text-underline-offset: 3px;
-}
-.hero__actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 52px;
-}
+  photoImgs.forEach((img) => {
+    const base = img.getAttribute('data-photo-base');
+    const originalSrc = img.getAttribute('src');
+    const extensions = ['jpg', 'jpeg', 'png', 'webp'];
 
-/* Barra de estatísticas */
-.stats {
-  display: flex;
-  gap: 16px;
-}
-.stats__item {
-  padding: 18px 26px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.stats__value {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.7rem;
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.stats__label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-.stats__icon { color: var(--text-faint); font-size: 0.9rem; }
+    const candidates = extensions.map((ext) => `assets/${base}.${ext}`);
+    if (originalSrc) candidates.push(originalSrc);
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-faint);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  transition: color var(--t-fast);
-}
-.scroll-indicator:hover { color: var(--purple-light); }
-.scroll-indicator__line {
-  width: 1px;
-  height: 34px;
-  background: linear-gradient(180deg, currentColor, transparent);
-  position: relative;
-  overflow: hidden;
-}
-.scroll-indicator__line::after {
-  content: "";
-  position: absolute;
-  top: -34px;
-  left: 0;
-  width: 100%;
-  height: 34px;
-  background: linear-gradient(180deg, transparent, var(--cyan));
-  animation: scroll-drip 1.8s ease-in-out infinite;
-}
-@keyframes scroll-drip {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(68px); }
-}
+    let i = 0;
+    const tryNext = () => {
+      if (i >= candidates.length) {
+        showInitialsFallback(img);
+        return;
+      }
+      const candidate = candidates[i++];
+      const test = new Image();
+      test.onload = () => { img.src = candidate; };
+      test.onerror = tryNext;
+      test.src = candidate;
+    };
+    tryNext();
+  });
 
-@media (max-width: 700px) {
-  .stats { flex-direction: column; }
-}
+  /* ------------------------------------------------------------------ */
+  /* 11. BANNER AUTOMÁTICO DO HERO                                        */
+  /*    Procura por assets/hero-banner.(jpg|jpeg|png|webp) e aplica a     */
+  /*    primeira imagem encontrada como plano de fundo do hero.           */
+  /* ------------------------------------------------------------------ */
+  const heroBanner = document.querySelector('.hero__banner');
+  const candidateNames = [
+    'assets/hero-banner.jpg',
+    'assets/hero-banner.jpeg',
+    'assets/hero-banner.png',
+    'assets/hero-banner.webp',
+    'assets/banner.jpg',
+    'assets/banner.png',
+  ];
 
-/* ==========================================================================
-   SEÇÕES GERAIS
-   ========================================================================== */
-.section {
-  position: relative;
-  z-index: 1;
-  padding: 120px 28px;
-}
-.section--alt {
-  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.015) 15%, rgba(255,255,255,0.015) 85%, transparent);
-}
-.section__inner {
-  max-width: var(--container);
-  margin: 0 auto;
-}
-.section__head {
-  max-width: 560px;
-  margin-bottom: 56px;
-}
-.section__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 4vw, 2.7rem);
-  letter-spacing: -0.01em;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-}
-.section__title-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.section__desc {
-  color: var(--text-muted);
-  font-size: 1.02rem;
-}
+  const tryNextImage = (index) => {
+    if (!heroBanner || index >= candidateNames.length) return;
+    const img = new Image();
+    img.onload = () => {
+      heroBanner.style.backgroundImage = `url('${candidateNames[index]}')`;
+    };
+    img.onerror = () => tryNextImage(index + 1);
+    img.src = candidateNames[index];
+  };
+  tryNextImage(0);
 
-/* ==========================================================================
-   ATUALIZAÇÕES — accordion
-   ========================================================================== */
-.update-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.update-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(14px);
-  overflow: hidden;
-  transition: border-color var(--t-fast), background var(--t-fast);
-}
-.update-card:hover { border-color: var(--border-strong); }
-.update-card:not(.update-card--placeholder):has(.update-card__header[aria-expanded="true"]) {
-  border-color: rgba(139, 92, 246, 0.4);
-  background: rgba(139, 92, 246, 0.05);
-}
+  /* ------------------------------------------------------------------ */
+  /* 12. CONTAGEM DE MEMBROS DO DISCORD                                   */
+  /*    Busca a contagem aproximada de membros a partir do link de        */
+  /*    convite do servidor (não precisa de bot nem de token). Se a       */
+  /*    busca falhar (sem internet, CORS bloqueado, etc.), o número de    */
+  /*    reserva definido em FALLBACK_MEMBER_COUNT é usado no lugar.       */
+  /*                                                                      */
+  /*    IMPORTANTE: troque INVITE_CODE se o link do Discord mudar.        */
+  /*    OBS: não é possível puxar a FOTO DE PERFIL de uma pessoa           */
+  /*    específica do Discord direto pelo navegador — isso exige um bot   */
+  /*    rodando em um servidor por causa das regras de privacidade do     */
+  /*    Discord. As fotos do Owner/Devs continuam sendo as imagens em     */
+  /*    assets/ (troque o arquivo para atualizar a foto de cada um).      */
+  /* ------------------------------------------------------------------ */
+  const INVITE_CODE = 'MK4pqqtzCh';
+  const FALLBACK_MEMBER_COUNT = 92684;
 
-.update-card__header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 24px 28px;
-  background: none;
-  border: none;
-  color: var(--text);
-  text-align: left;
-}
-.update-card--placeholder .update-card__header { cursor: default; }
+  const formatNumber = (n) => n.toLocaleString('pt-BR');
 
-.update-card__heading {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.update-card__index {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text);
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 100px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-strong);
-}
-.update-card:not(.update-card--placeholder) .update-card__index {
-  background: var(--gradient-accent);
-  color: var(--bg);
-  border-color: transparent;
-}
-.update-card__title {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-.update-card__date {
-  font-size: 0.8rem;
-  color: var(--text-faint);
-  letter-spacing: 0.03em;
-}
-.update-card--placeholder .update-card__title,
-.update-card--placeholder .update-card__index { color: var(--text-faint); }
+  const setMemberCount = (n) => {
+    const formatted = formatNumber(n);
+    const badge = document.getElementById('memberBadgeCount');
+    const stat = document.getElementById('statMembers');
+    if (badge) badge.textContent = formatted;
+    if (stat) stat.textContent = formatted;
+  };
 
-.update-card__chevron {
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: var(--text-muted);
-  transition: transform var(--t-fast), color var(--t-fast);
-  flex-shrink: 0;
-}
-.update-card__header[aria-expanded="true"] .update-card__chevron {
-  transform: rotate(45deg);
-  color: var(--purple-light);
-}
+  // Mostra o número de reserva imediatamente para nunca deixar "—" na tela
+  setMemberCount(FALLBACK_MEMBER_COUNT);
 
-.update-card__body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--t-med);
-}
-.update-card__body-inner {
-  padding: 0 28px 28px 88px;
-}
-.update-card__list li {
-  position: relative;
-  padding-left: 22px;
-  margin-bottom: 12px;
-  color: var(--text-muted);
-  font-size: 0.96rem;
-}
-.update-card__list li:last-child { margin-bottom: 0; }
-.update-card__list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 9px;
-  width: 7px;
-  height: 7px;
-  border-radius: 3px;
-  background: var(--gradient-accent);
-}
+  fetch(`https://discord.com/api/v10/invites/${INVITE_CODE}?with_counts=true`)
+    .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+    .then((data) => {
+      if (typeof data.approximate_member_count === 'number') {
+        setMemberCount(data.approximate_member_count);
+      }
+    })
+    .catch(() => {
+      // Mantém o número de reserva silenciosamente — sem quebrar a página.
+    });
 
-/* ==========================================================================
-   CARDS DE PESSOAS (devs / donos)
-   ========================================================================== */
-.people-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
-}
-.people-grid--owners {
-  grid-template-columns: repeat(2, 1fr);
-  max-width: 760px;
-}
-
-.person-card {
-  position: relative;
-  padding: 32px 26px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-  transition: transform var(--t-fast), border-color var(--t-fast);
-}
-.person-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(139, 92, 246, 0.4);
-}
-
-.person-card__tag {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 5px 12px;
-  border-radius: 100px;
-  background: var(--gradient-accent);
-  color: var(--bg);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-.person-card__tag--owner {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--cyan);
-  border: 1px solid var(--border-strong);
-}
-
-.person-card__photo {
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: 20px;
-  border: 1px solid var(--border-strong);
-  position: relative;
-}
-.person-card__photo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
-}
-.person-card__photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: var(--surface-2);
-}
-.person-card__initials {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-accent);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.15rem;
-}
-
-.person-card__name {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  position: relative;
-}
-.person-card__role {
-  display: inline-block;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--purple-light);
-  margin-bottom: 14px;
-  position: relative;
-}
-.person-card__desc {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  position: relative;
-  line-height: 1.6;
-}
-
-@media (max-width: 1000px) {
-  .people-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 560px) {
-  .people-grid,
-  .people-grid--owners { grid-template-columns: 1fr; }
-}
-
-/* ==========================================================================
-   RODAPÉ
-   ========================================================================== */
-.footer {
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid var(--border);
-  padding: 44px 28px;
-}
-.footer__inner {
-  max-width: var(--container);
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.footer__brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
-}
-.footer__copy {
-  font-size: 0.85rem;
-  color: var(--text-faint);
-}
-.footer__socials {
-  display: flex;
-  gap: 10px;
-}
-.footer__social {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--text-muted);
-  transition: color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
-}
-.footer__social svg { width: 16px; height: 16px; }
-.footer__social:hover {
-  color: var(--purple-light);
-  border-color: var(--purple-light);
-  transform: translateY(-3px);
-}
-
-/* ==========================================================================
-   BOTÃO VOLTAR AO TOPO
-   ========================================================================== */
-.back-to-top {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: rgba(16, 17, 24, 0.85);
-  backdrop-filter: blur(10px);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 90;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: opacity var(--t-fast), transform var(--t-fast), border-color var(--t-fast), visibility var(--t-fast);
-}
-.back-to-top.is-visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.back-to-top:hover {
-  border-color: var(--purple-light);
-  color: var(--purple-light);
-}
-.back-to-top svg { width: 18px; height: 18px; }
-
-/* ==========================================================================
-   RESPONSIVO
-   ========================================================================== */
-@media (max-width: 640px) {
-  .hero { padding: 130px 20px 70px; min-height: 92vh; }
-  .hero__actions { flex-direction: column; align-items: stretch; }
-  .hero__actions .btn { width: 100%; }
-  .section { padding: 84px 20px; }
-  .update-card__body-inner { padding: 0 20px 24px 20px; }
-  .update-card__header { padding: 20px; }
-  .update-card__heading { gap: 14px; }
-  .footer__inner { flex-direction: column; text-align: center; }
-}
+});
