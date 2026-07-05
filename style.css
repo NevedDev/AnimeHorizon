@@ -16,8 +16,8 @@
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.16);
 
-  --purple: #8b5cf6;
-  --purple-light: #a78bfa;
+  --blue-deep: #1d4ed8;
+  --blue-mid: #3b82f6;
   --cyan: #22d3ee;
   --green: #34d399;
 
@@ -25,8 +25,8 @@
   --text-muted: #9a9aa8;
   --text-faint: #63636f;
 
-  --gradient-accent: linear-gradient(90deg, var(--purple) 0%, var(--cyan) 100%);
-  --gradient-radial: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%);
+  --gradient-accent: linear-gradient(90deg, var(--blue-deep) 0%, var(--blue-mid) 55%, var(--cyan) 100%);
+  --gradient-radial: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
 
   /* Tipografia */
   --font-display: 'Space Grotesk', sans-serif;
@@ -69,7 +69,7 @@ a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
 button { font: inherit; cursor: pointer; }
 
-::selection { background: var(--purple); color: #fff; }
+::selection { background: var(--blue-deep); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -121,7 +121,7 @@ button { font: inherit; cursor: pointer; }
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--purple-light);
+  color: var(--blue-mid);
   margin-bottom: 14px;
 }
 
@@ -165,27 +165,56 @@ button { font: inherit; cursor: pointer; }
   font-size: 0.92rem;
   border-radius: 100px;
   border: 1px solid transparent;
+  overflow: hidden;
+  isolation: isolate;
   transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), border-color var(--t-fast);
   white-space: nowrap;
 }
+
+/* Brilho que desliza sobre o botão ao passar o cursor — usado nos dois estilos */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.35) 48%, rgba(255, 255, 255, 0.35) 52%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.65s var(--ease);
+  pointer-events: none;
+}
+.btn:hover::before { transform: translateX(120%); }
+
+.btn > * { position: relative; z-index: 2; }
+
+/* Primário — gradiente azul mesclado (indigo → azul → ciano) */
 .btn--primary {
-  background: var(--text);
-  color: #0a0b10;
+  background: var(--gradient-accent);
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background-position 0.5s var(--ease);
 }
 .btn--primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px -6px rgba(139, 92, 246, 0.45);
+  background-position: 100% 0%;
+  box-shadow: 0 12px 34px -8px rgba(59, 130, 246, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
 }
+
+/* Vidro — glassmorphism: translúcido, desfocado, com brilho de borda */
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--border-strong);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  border-color: rgba(255, 255, 255, 0.18);
   color: var(--text);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.15) inset, 0 8px 20px -10px rgba(0, 0, 0, 0.5);
 }
 .btn--ghost:hover {
-  border-color: var(--purple-light);
-  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(96, 165, 250, 0.6);
+  background: linear-gradient(160deg, rgba(59, 130, 246, 0.22), rgba(255, 255, 255, 0.04));
   transform: translateY(-2px);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.2) inset, 0 10px 26px -8px rgba(59, 130, 246, 0.4);
 }
 
 /* Scroll reveal */
@@ -236,9 +265,9 @@ button { font: inherit; cursor: pointer; }
   letter-spacing: 0.01em;
 }
 .navbar__brand-mark {
-  color: var(--purple-light);
+  color: var(--blue-mid);
   font-size: 1.1rem;
-  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.7));
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.7));
 }
 .navbar__brand-accent {
   background: var(--gradient-accent);
@@ -316,7 +345,7 @@ button { font: inherit; cursor: pointer; }
   background: rgba(255, 255, 255, 0.03);
 }
 .navbar__mobile-link--discord {
-  color: var(--purple-light);
+  color: var(--blue-mid);
   font-weight: 600;
   border-bottom: none;
 }
@@ -404,7 +433,7 @@ button { font: inherit; cursor: pointer; }
   color: var(--text);
   font-weight: 600;
   text-decoration: underline;
-  text-decoration-color: var(--purple-light);
+  text-decoration-color: var(--blue-mid);
   text-underline-offset: 3px;
 }
 .hero__actions {
@@ -461,7 +490,7 @@ button { font: inherit; cursor: pointer; }
   letter-spacing: 0.2em;
   transition: color var(--t-fast);
 }
-.scroll-indicator:hover { color: var(--purple-light); }
+.scroll-indicator:hover { color: var(--blue-mid); }
 .scroll-indicator__line {
   width: 1px;
   height: 34px;
@@ -544,8 +573,8 @@ button { font: inherit; cursor: pointer; }
 }
 .update-card:hover { border-color: var(--border-strong); }
 .update-card:not(.update-card--placeholder):has(.update-card__header[aria-expanded="true"]) {
-  border-color: rgba(139, 92, 246, 0.4);
-  background: rgba(139, 92, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.05);
 }
 
 .update-card__header {
@@ -610,7 +639,7 @@ button { font: inherit; cursor: pointer; }
 }
 .update-card__header[aria-expanded="true"] .update-card__chevron {
   transform: rotate(45deg);
-  color: var(--purple-light);
+  color: var(--blue-mid);
 }
 
 .update-card__body {
@@ -665,7 +694,7 @@ button { font: inherit; cursor: pointer; }
 }
 .person-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .person-card__tag {
@@ -722,7 +751,7 @@ button { font: inherit; cursor: pointer; }
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--purple-light);
+  color: var(--blue-mid);
   margin-bottom: 14px;
   position: relative;
 }
@@ -788,8 +817,8 @@ button { font: inherit; cursor: pointer; }
 }
 .footer__social svg { width: 16px; height: 16px; }
 .footer__social:hover {
-  color: var(--purple-light);
-  border-color: var(--purple-light);
+  color: var(--blue-mid);
+  border-color: var(--blue-mid);
   transform: translateY(-3px);
 }
 
@@ -822,8 +851,8 @@ button { font: inherit; cursor: pointer; }
   transform: translateY(0);
 }
 .back-to-top:hover {
-  border-color: var(--purple-light);
-  color: var(--purple-light);
+  border-color: var(--blue-mid);
+  color: var(--blue-mid);
 }
 .back-to-top svg { width: 18px; height: 18px; }
 
