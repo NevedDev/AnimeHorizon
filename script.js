@@ -144,98 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('footerYear').textContent = new Date().getFullYear();
 
   /* ------------------------------------------------------------------ */
-  /* 10. FOTOS DE PERFIL (DEV / DONO)                                     */
-  /*     Cada <img> tem um atributo data-photo-base com o nome da         */
-  /*     pessoa (ex: "Chrollo"). O script tenta carregar, nessa ordem:    */
-  /*       1) assets/<Nome>.jpg / .jpeg / .png / .webp                    */
-  /*       2) o src original do HTML (ex: assets/dev-placeholder.jpg)     */
-  /*     Se nada for encontrado, mostra as iniciais da pessoa no lugar    */
-  /*     em vez do ícone de imagem quebrada.                              */
-  /*                                                                      */
-  /*     PARA ADICIONAR UMA FOTO: salve o arquivo dentro da pasta         */
-  /*     "assets" usando exatamente o nome da pessoa, por exemplo:        */
-  /*     assets/Chrollo.jpg — respeitando maiúsculas/minúsculas.          */
+  /* 10. BANNER DO HERO                                                   */
+  /*    A imagem do banner é definida direto no style.css                 */
+  /*    (.hero__banner { background-image: url('assets/hero-banner.jpg')} */
+  /*    Sem lógica extra aqui — só troque o arquivo em assets/.           */
   /* ------------------------------------------------------------------ */
-  const photoImgs = document.querySelectorAll('[data-photo-base]');
-
-  const showInitialsFallback = (img) => {
-    const wrapper = img.closest('.person-card__photo');
-    if (!wrapper) return;
-    const name = img.getAttribute('data-photo-base') || '?';
-    const initials = name.trim().slice(0, 2).toUpperCase();
-    const fallback = document.createElement('div');
-    fallback.className = 'person-card__initials';
-    fallback.textContent = initials;
-    img.replaceWith(fallback);
-  };
-
-  photoImgs.forEach((img) => {
-    const base = img.getAttribute('data-photo-base');
-    const originalSrc = img.getAttribute('src');
-    const extensions = ['jpg', 'jpeg', 'png', 'webp'];
-
-    const candidates = extensions.map((ext) => `assets/${base}.${ext}`);
-    if (originalSrc) candidates.push(originalSrc);
-
-    let i = 0;
-    const tryNext = () => {
-      if (i >= candidates.length) {
-        console.warn(`[Anime Horizon] Nenhuma foto encontrada para "${base}". Caminhos testados:`, candidates);
-        showInitialsFallback(img);
-        return;
-      }
-      const candidate = candidates[i++];
-      const test = new Image();
-      test.onload = () => {
-        img.src = candidate;
-        console.info(`[Anime Horizon] Foto de "${base}" carregada:`, candidate);
-      };
-      test.onerror = () => {
-        console.warn(`[Anime Horizon] Falhou ao tentar foto de "${base}":`, candidate);
-        tryNext();
-      };
-      test.src = candidate;
-    };
-    tryNext();
-  });
-
-  /* ------------------------------------------------------------------ */
-  /* 11. BANNER AUTOMÁTICO DO HERO                                        */
-  /*    Procura por assets/hero-banner.(jpg|jpeg|png|webp) e aplica a     */
-  /*    primeira imagem encontrada como plano de fundo do hero.           */
-  /* ------------------------------------------------------------------ */
-  const heroBanner = document.querySelector('.hero__banner');
-  const candidateNames = [
-    'assets/hero-banner.jpg',
-    'assets/hero-banner.jpeg',
-    'assets/hero-banner.png',
-    'assets/hero-banner.webp',
-    'assets/Hero-Banner.jpg',
-    'assets/banner.jpg',
-    'assets/banner.png',
-  ];
-
-  const tryNextImage = (index) => {
-    if (!heroBanner) {
-      console.warn('[Anime Horizon] .hero__banner não foi encontrado no HTML.');
-      return;
-    }
-    if (index >= candidateNames.length) {
-      console.warn('[Anime Horizon] Nenhuma imagem de banner encontrada. Caminhos testados:', candidateNames);
-      return;
-    }
-    const img = new Image();
-    img.onload = () => {
-      heroBanner.style.backgroundImage = `url('${candidateNames[index]}')`;
-      console.info('[Anime Horizon] Banner carregado com sucesso:', candidateNames[index]);
-    };
-    img.onerror = () => {
-      console.warn('[Anime Horizon] Falhou ao tentar carregar:', candidateNames[index]);
-      tryNextImage(index + 1);
-    };
-    img.src = candidateNames[index];
-  };
-  tryNextImage(0);
 
   /* ------------------------------------------------------------------ */
   /* 12. CONTAGEM DE MEMBROS DO DISCORD                                   */
