@@ -1,112 +1,10 @@
 /* ==========================================================================
-   NOVA — script.js
+   ANIME HORIZON — script.js
    Toda a interatividade do site: navbar, menu mobile, accordion de
-   atualizações, scroll reveal, botão voltar ao topo.
+   atualizações, scroll reveal, botão voltar ao topo, colagem do hero.
    ========================================================================== */
-
-/* ==========================================================================
-   BUSCA AUTOMÁTICA DA IMAGEM DO BANNER
-   Roda fora do DOMContentLoaded pra começar a tentar carregar a imagem
-   o mais cedo possível (assim que a tag <body>/.hero__banner existir).
-
-   Por que isso existe: hospedagens como o GitHub diferenciam MAIÚSCULA de
-   minúscula no nome do arquivo (diferente do Windows). Pra evitar dor de
-   cabeça, o site testa uma lista de nomes/formatos comuns dentro da pasta
-   assets/ e usa o primeiro que encontrar. Se a sua imagem tiver outro nome,
-   é só adicionar ele na lista CANDIDATOS_BANNER abaixo.
-   ========================================================================== */
-(function carregarBannerAutomaticamente() {
-  // Pastas possíveis onde a imagem pode estar (GitHub diferencia maiúscula/minúscula):
-  const PASTAS = ['assets', 'Assets', 'ASSETS', 'Assets/'];
-  // Nomes de arquivo possíveis, sem a pasta:
-  const NOMES_ARQUIVO = [
-    'hero-banner.jpg', 'hero-banner.jpeg', 'hero-banner.png', 'hero-banner.webp',
-    'Hero-Banner.jpg', 'Hero-Banner.png', 'HERO-BANNER.JPG',
-    'banner.jpg', 'banner.png', 'Banner.jpg', 'Banner.png',
-    'Asta.png', 'asta.png'
-  ];
-
-  // Gera todas as combinações pasta + nome de arquivo, mais a raiz do site
-  const CANDIDATOS_BANNER = [];
-  PASTAS.forEach((pasta) => {
-    NOMES_ARQUIVO.forEach((nome) => {
-      CANDIDATOS_BANNER.push(`${pasta}/${nome}`.replace('//', '/'));
-    });
-  });
-  NOMES_ARQUIVO.forEach((nome) => CANDIDATOS_BANNER.push(nome));
-
-  function aplicarImagem(caminho) {
-    const banner = document.querySelector('.hero__banner');
-    if (banner) banner.style.backgroundImage = `url('${caminho}')`;
-  }
-
-  function tentarProximo(indice) {
-    if (indice >= CANDIDATOS_BANNER.length) {
-      console.warn(
-        '[Banner] Nenhuma imagem encontrada nos caminhos testados. ' +
-        'Confirme se o arquivo está dentro da pasta "assets" e adicione ' +
-        'o nome exato dele na lista CANDIDATOS_BANNER em script.js.'
-      );
-      return;
-    }
-    const caminho = CANDIDATOS_BANNER[indice];
-    const teste = new Image();
-    teste.onload = () => aplicarImagem(caminho);
-    teste.onerror = () => tentarProximo(indice + 1);
-    teste.src = caminho;
-  }
-
-  tentarProximo(0);
-})();
-
-/* ==========================================================================
-   BUSCA AUTOMÁTICA DAS FOTOS DE PERFIL (Desenvolvedores / Donos)
-   Funciona junto com o atributo data-photo-base="NomeDoArquivo" no <img>.
-   Testa extensões e variações de maiúscula/minúscula automaticamente,
-   assim não precisa acertar ".jpg", ".png" etc. na hora de subir a foto.
-   ========================================================================== */
-(function carregarFotosDePerfilAutomaticamente() {
-  const EXTENSOES = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'PNG', 'JPEG'];
-
-  function gerarCandidatos(nomeBase) {
-    const PASTAS = ['assets', 'Assets', 'ASSETS'];
-    const candidatos = [];
-    PASTAS.forEach((pasta) => {
-      EXTENSOES.forEach((ext) => {
-        candidatos.push(`${pasta}/${nomeBase}.${ext}`);
-      });
-    });
-    return candidatos;
-  }
-
-  function tentarProximaFoto(img, candidatos, indice) {
-    if (indice >= candidatos.length) {
-      console.warn(
-        `[Foto] Nenhuma imagem encontrada para "${img.dataset.photoBase}". ` +
-        `Confirme se o arquivo está dentro da pasta "assets" (ou "Assets").`
-      );
-      return; // mantém a foto placeholder que já está no src
-    }
-    const caminho = candidatos[indice];
-    const teste = new Image();
-    teste.onload = () => { img.src = caminho; };
-    teste.onerror = () => tentarProximaFoto(img, candidatos, indice + 1);
-    teste.src = caminho;
-  }
-
-  document.querySelectorAll('img[data-photo-base]').forEach((img) => {
-    const nomeBase = img.dataset.photoBase;
-    const candidatos = gerarCandidatos(nomeBase);
-    tentarProximaFoto(img, candidatos, 0);
-  });
-})();
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  /* ------------------------------------------------------------------ */
-  /* 0. REFERÊNCIAS DE ELEMENTOS USADAS EM VÁRIOS PONTOS DO SCRIPT        */
-  /* ------------------------------------------------------------------ */
-  const backToTop = document.getElementById('backToTop');
 
   /* ------------------------------------------------------------------ */
   /* 1. NAVBAR — efeito de transparência ao rolar                        */
@@ -199,6 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const firstToggle = document.querySelector('[data-update-toggle]:not([disabled])');
   if (firstToggle) firstToggle.click();
 
+  // Recalcula a altura do card aberto se a janela for redimensionada
+  window.addEventListener('resize', () => {
+    const openToggle = document.querySelector('.update-card__header[aria-expanded="true"]');
+    if (!openToggle) return;
+    const card = openToggle.closest('.update-card');
+    const body = card.querySelector('.update-card__body');
+    const bodyInner = card.querySelector('.update-card__body-inner');
+    body.style.maxHeight = bodyInner.offsetHeight + 'px';
+  });
+
   /* ------------------------------------------------------------------ */
   /* 5. SCROLL REVEAL — anima elementos ao entrarem na tela                */
   /* ------------------------------------------------------------------ */
@@ -221,6 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ------------------------------------------------------------------ */
   /* 6. BOTÃO VOLTAR AO TOPO                                              */
   /* ------------------------------------------------------------------ */
+  const backToTop = document.getElementById('backToTop');
+
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
@@ -229,5 +139,52 @@ document.addEventListener('DOMContentLoaded', () => {
   /* 7. ANO DINÂMICO NO RODAPÉ                                            */
   /* ------------------------------------------------------------------ */
   document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+  /* ------------------------------------------------------------------ */
+  /* 8. COLAGEM DE FUNDO DO HERO                                          */
+  /*    Gera os ladrilhos e tenta preencher cada um com uma imagem de     */
+  /*    assets/collage/1.jpg, 2.jpg, 3.jpg... (até 12). Ladrilhos sem     */
+  /*    imagem correspondente recebem um gradiente neutro como reserva.   */
+  /* ------------------------------------------------------------------ */
+  const collage = document.getElementById('heroCollage');
+
+  if (collage) {
+    const TILE_COUNT = 24; // quantidade de ladrilhos exibidos na colagem
+    const MAX_IMAGES = 12; // quantidade máxima de imagens que o script procura
+    const fallbackClasses = ['collage-tile--a', 'collage-tile--b', 'collage-tile--c'];
+    const extensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+    // Cria todos os ladrilhos já com uma classe de reserva (gradiente neutro)
+    const tiles = [];
+    for (let i = 0; i < TILE_COUNT; i++) {
+      const tile = document.createElement('div');
+      tile.className = `collage-tile ${fallbackClasses[i % fallbackClasses.length]}`;
+      collage.appendChild(tile);
+      tiles.push(tile);
+    }
+
+    // Tenta carregar assets/collage/N.<ext> para N de 1 até MAX_IMAGES.
+    // Cada imagem encontrada substitui o fundo de um ou mais ladrilhos.
+    const tryLoad = (n, extIndex) => {
+      if (n > MAX_IMAGES) return;
+      if (extIndex >= extensions.length) {
+        tryLoad(n + 1, 0);
+        return;
+      }
+      const path = `assets/collage/${n}.${extensions[extIndex]}`;
+      const img = new Image();
+      img.onload = () => {
+        tiles.forEach((tile, i) => {
+          if (i % MAX_IMAGES === (n - 1)) {
+            tile.style.backgroundImage = `url('${path}')`;
+          }
+        });
+        tryLoad(n + 1, 0);
+      };
+      img.onerror = () => tryLoad(n, extIndex + 1);
+      img.src = path;
+    };
+    tryLoad(1, 0);
+  }
 
 });
