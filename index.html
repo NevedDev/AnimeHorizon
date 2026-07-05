@@ -9,7 +9,7 @@
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -21,6 +21,7 @@
   <div class="bg-glow bg-glow--one" aria-hidden="true"></div>
   <div class="bg-glow bg-glow--two" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-slash" aria-hidden="true"></div>
 
   <!-- ==================== -->
   <!-- NAVEGAÇÃO             -->
@@ -28,15 +29,15 @@
   <header class="navbar" id="navbar">
     <div class="navbar__inner">
       <a href="#topo" class="navbar__brand">
-        <span class="navbar__brand-mark">◆</span>
-        <span>Anime Horizon</span>
+        <span class="navbar__brand-mark">火</span>
+        <span>ANIME HORIZON</span>
       </a>
 
       <nav class="navbar__links" id="navLinks">
-        <a href="#topo" class="navbar__link is-active">Início</a>
-        <a href="#atualizacoes" class="navbar__link">Atualizações</a>
-        <a href="#desenvolvedores" class="navbar__link">Desenvolvedores</a>
-        <a href="#donos" class="navbar__link">Donos</a>
+        <a href="#topo" class="navbar__link is-active"><span class="navbar__link-index">01</span>Início</a>
+        <a href="#atualizacoes" class="navbar__link"><span class="navbar__link-index">02</span>Atualizações</a>
+        <a href="#desenvolvedores" class="navbar__link"><span class="navbar__link-index">03</span>Devs</a>
+        <a href="#donos" class="navbar__link"><span class="navbar__link-index">04</span>Donos</a>
       </nav>
 
       <a href="https://discord.gg/MK4pqqtzCh" class="btn btn--primary navbar__cta" target="_blank" rel="noopener noreferrer">Entrar no Discord</a>
@@ -63,17 +64,15 @@
     <!--
       ======================================================================
       IMAGEM DO BANNER:
-      O caminho da imagem NÃO fica mais fixo aqui — o script.js procura
-      automaticamente por "assets/hero-banner.jpg" (e alguns nomes/formatos
-      alternativos) e aplica a que encontrar primeiro. Basta colocar sua
-      imagem dentro da pasta "assets" com esse nome.
+      O script.js procura automaticamente por "assets/hero-banner.jpg" (e
+      alguns nomes/formatos alternativos) e aplica a que encontrar primeiro.
+      Basta colocar sua imagem dentro da pasta "assets" com esse nome.
       Recomendado: 1920x1080px ou maior, formato paisagem.
-      Se algum dia quiser voltar a fixar manualmente, adicione de volta
-      style="background-image: url('assets/SEU-ARQUIVO.jpg');" na div abaixo.
       ======================================================================
     -->
     <div class="hero__banner"></div>
     <div class="hero__overlay"></div>
+    <div class="hero__slash" aria-hidden="true"></div>
 
     <div class="hero__content reveal">
       <span class="tag">
@@ -110,7 +109,7 @@
   <section class="section" id="atualizacoes">
     <div class="section__inner">
       <div class="section__head reveal">
-        <span class="eyebrow">Changelog</span>
+        <span class="eyebrow">// changelog</span>
         <h2 class="section__title">Atualizações</h2>
         <p class="section__desc">
           Tudo o que muda no jogo, atualização após atualização. Clique em um card para ver os detalhes.
@@ -229,7 +228,7 @@
   <section class="section section--alt" id="desenvolvedores">
     <div class="section__inner">
       <div class="section__head reveal">
-        <span class="eyebrow">A equipe</span>
+        <span class="eyebrow">// a equipe</span>
         <h2 class="section__title">Desenvolvedores</h2>
         <p class="section__desc">
           As pessoas que colocam a mão na massa todos os dias para dar vida ao jogo.
@@ -244,6 +243,7 @@
 
         <article class="person-card reveal">
           <div class="person-card__glow"></div>
+          <span class="person-card__tag">DEV</span>
           <div class="person-card__photo">
             <img src="assets/dev-placeholder.jpg" data-photo-base="Chrollo" alt="Foto de perfil de Chrollo" loading="lazy">
           </div>
@@ -254,6 +254,7 @@
 
         <article class="person-card reveal">
           <div class="person-card__glow"></div>
+          <span class="person-card__tag">DEV</span>
           <div class="person-card__photo">
             <img src="assets/dev-placeholder.jpg" data-photo-base="Mordecaz" alt="Foto de perfil de Mordecaz" loading="lazy">
           </div>
@@ -272,7 +273,7 @@
   <section class="section" id="donos">
     <div class="section__inner">
       <div class="section__head reveal">
-        <span class="eyebrow">Liderança</span>
+        <span class="eyebrow">// liderança</span>
         <h2 class="section__title">Donos</h2>
         <p class="section__desc">
           Os responsáveis pela visão e direção do projeto.
@@ -287,6 +288,7 @@
 
         <article class="person-card reveal">
           <div class="person-card__glow"></div>
+          <span class="person-card__tag person-card__tag--owner">OWNER</span>
           <div class="person-card__photo">
             <img src="assets/owner-placeholder.jpg" data-photo-base="Chrollo" alt="Foto de perfil de Chrollo" loading="lazy">
           </div>
@@ -297,6 +299,7 @@
 
         <article class="person-card reveal">
           <div class="person-card__glow"></div>
+          <span class="person-card__tag person-card__tag--owner">OWNER</span>
           <div class="person-card__photo">
             <img src="assets/owner-placeholder.jpg" data-photo-base="Mordecaz" alt="Foto de perfil de Mordecaz" loading="lazy">
           </div>
@@ -315,8 +318,8 @@
   <footer class="footer">
     <div class="footer__inner">
       <div class="footer__brand">
-        <span class="navbar__brand-mark">◆</span>
-        <span>Anime Horizon</span>
+        <span class="navbar__brand-mark">火</span>
+        <span>ANIME HORIZON</span>
       </div>
 
       <p class="footer__copy">
